@@ -22,7 +22,7 @@ export default function CartPage() {
       router.push("/login")
     }
   }, [isLoggedIn, router]) 
-  
+
   // ✅ تابع خروج
   const handleLogout = () => {
     logout()  // خروج از Zustand
@@ -225,12 +225,13 @@ export default function CartPage() {
               </div>
             </div>
 
-            <button className="w-full mt-4 py-3 bg-gradient-to-r from-emerald-500 to-teal-500 
-              hover:from-emerald-600 hover:to-teal-600 active:scale-[0.98]
-              text-white font-medium rounded-xl transition-all duration-200 shadow-md shadow-emerald-500/20">
-              ✅ ادامه فرآیند خرید
-            </button>
-
+<Link href="/checkout">
+  <button className="w-full mt-4 py-3 bg-gradient-to-r from-emerald-500 to-teal-500 
+    hover:from-emerald-600 hover:to-teal-600 active:scale-[0.98]
+    text-white font-medium rounded-xl transition-all duration-200 shadow-md shadow-emerald-500/20">
+    ✅ ادامه فرآیند خرید
+  </button>
+</Link>
             <Link 
               href="/" 
               className="block text-center text-sm text-slate-400 hover:text-emerald-500 transition-colors mt-3"
