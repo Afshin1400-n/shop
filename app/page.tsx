@@ -1,12 +1,12 @@
 // app/page.tsx
 "use client"
-import { useState, useEffect, useMemo } from "react";
+import { useMemo , useEffect} from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import BtnFilter from "./component/BtnFilter";
 import { useFilterStore } from "./store/filterStore";
 import { useCartStore } from "./store/cartStore";
-import { useUserStore } from "./store/userStore"; // ✅ اضافه شد
+import { useUserStore } from "./store/userStore";
 
 const products = [
   {
@@ -68,15 +68,18 @@ const products = [
 export default function Home() {
   const router = useRouter();
   
-  // ✅ گرفتن از Zustand
-  const { user, isLoggedIn } = useUserStore(); // ✅ درست
+  const { user, isLoggedIn } = useUserStore();
   const { filter, searchTerm, setFilter, setSearchTerm } = useFilterStore();
-  const { items, addToCart, totalItems } = useCartStore();
+  const { addToCart, totalItems } = useCartStore();
+ const { setUserId } = useCartStore()
+   // ✅ وقتی کاربر لاگین میکنه، سبد خریدش رو بارگذاری کن
+  useEffect(() => {
+    if (isLoggedIn && user?.id) {
+      setUserId(user.id)
+    }
+  }, [isLoggedIn, user, setUserId])
 
-  // ❌ حذف useState اضافی
-  // const [user, setUser] = useState(null); // ❌ حذف شد
-
-  const handleOutUser = () => {
+  const handleLogout = () => {
     localStorage.removeItem("currentUser");
     router.push("/login");
   };
@@ -113,16 +116,17 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 py-3">
           <div className="flex items-center justify-between gap-4">
             
+            {/* لوگو */}
             <Link href="/" className="text-2xl font-bold bg-gradient-to-r from-emerald-500 to-teal-500 bg-clip-text text-transparent">
               🛍️ فروشگاه
             </Link>
 
-            {/* ✅ سرچ با value و دکمه پاک کردن */}
+            {/* ✅ سرچ */}
             <div className="flex-1 max-w-md mx-4">
               <div className="relative">
                 <input
                   type="text"
-                  value={searchTerm} // ✅ اضافه شد
+                  value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   placeholder="جستجوی محصول..."
                   className="w-full px-4 py-2.5 pr-10 bg-slate-50 border border-slate-200 rounded-xl 
@@ -132,7 +136,6 @@ export default function Home() {
                 <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">
                   🔍
                 </span>
-                {/* ✅ دکمه پاک کردن سرچ */}
                 {searchTerm && (
                   <button
                     onClick={() => setSearchTerm("")}
@@ -144,16 +147,26 @@ export default function Home() {
               </div>
             </div>
 
+            {/* دکمه‌های راست */}
             <div className="flex items-center gap-3">
-              <Link href="/cart" className="relative p-2 text-slate-500 hover:text-emerald-500 transition-colors">
-                🛒
-                {totalItems() > 0 && (
-                  <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] w-5 h-5 rounded-full flex items-center justify-center shadow-md shadow-red-500/30">
-                    {totalItems()}
-                  </span>
-                )}
-              </Link>
               
+              {/* سبد خرید - شرطی */}
+              {isLoggedIn ? (
+                <Link href="/cart" className="relative p-2 text-slate-500 hover:text-emerald-500 transition-colors">
+                  🛒
+                  {totalItems() > 0 && (
+                    <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] w-5 h-5 rounded-full flex items-center justify-center shadow-md shadow-red-500/30">
+                      {totalItems()}
+                    </span>
+                  )}
+                </Link>
+              ) : (
+                <Link href="/login" className="relative p-2 text-slate-400 hover:text-emerald-500 transition-colors">
+                  🛒
+                </Link>
+              )}
+
+              {/* پروفایل کاربر */}
               <div className="flex items-center gap-2 px-3 py-2 bg-white/80 backdrop-blur-sm rounded-xl shadow-sm border border-slate-200/50">
                 <div className="w-8 h-8 bg-gradient-to-br from-emerald-400 to-teal-500 rounded-full flex items-center justify-center text-white text-sm font-bold shadow-md shadow-emerald-500/20">
                   {getInitial(user?.username || user?.name)}
@@ -164,7 +177,7 @@ export default function Home() {
                   </p>
                   {isLoggedIn ? (
                     <button 
-                      onClick={handleOutUser}
+                      onClick={handleLogout}
                       className="text-[10px] text-slate-400 hover:text-red-500 transition-colors"
                     >
                       خروج
@@ -201,12 +214,10 @@ export default function Home() {
           </div>
         </div>
 
-        {/* ✅ نمایش تعداد نتایج */}
         <p className="text-sm text-slate-400 mb-4">
           {filteredTasks.length} محصول یافت شد
         </p>
 
-        {/* لیست محصولات */}
         {filteredTasks.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
             {filteredTasks.map((product) => (

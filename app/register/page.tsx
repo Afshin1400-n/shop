@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useUserStore } from "../store/userStore";
+import { useCartStore } from "../store/cartStore";
 
 export default function RegisterPage() {
   const [username, setUsername] = useState("");
@@ -14,6 +15,7 @@ export default function RegisterPage() {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
   const { login } = useUserStore();
+  const { setUserId } = useCartStore();
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -51,11 +53,15 @@ export default function RegisterPage() {
     users.push(newUser);
     localStorage.setItem("users", JSON.stringify(users));
 
+    // ✅ لاگین خودکار بعد از ثبت‌نام
+    login({ id: username, username: username });
+    setUserId(username); // ✅ تنظیم userId در سبد خرید
+
     setSuccess(true);
     setLoading(false);
 
     setTimeout(() => {
-      router.push("/login"); // ✅ درست
+      router.push("/"); // ✅ رفتن به صفحه اصلی
     }, 2000);
   };
 
@@ -79,7 +85,7 @@ export default function RegisterPage() {
           {success ? (
             <div className="mb-4 p-4 bg-emerald-50 border border-emerald-200 rounded-xl text-emerald-600 text-center">
               <div className="font-bold">✅ ثبت‌نام با موفقیت انجام شد!</div>
-              <div className="text-sm text-emerald-500/70 mt-1">در حال انتقال به صفحه ورود...</div>
+              <div className="text-sm text-emerald-500/70 mt-1">در حال انتقال به صفحه اصلی...</div>
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-4">

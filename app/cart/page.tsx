@@ -17,6 +17,12 @@ export default function CartPage() {
     return name.charAt(0).toUpperCase()
   }
 
+    useEffect(() => {
+    if (!isLoggedIn) {
+      router.push("/login")
+    }
+  }, [isLoggedIn, router]) 
+  
   // ✅ تابع خروج
   const handleLogout = () => {
     logout()  // خروج از Zustand

@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useUserStore } from "../store/userStore"; // ✅ اضافه شد
+import { useCartStore } from "../store/cartStore";
 
 export default function LoginPage() {
   const [username, setUsername] = useState("");
@@ -12,6 +13,7 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
   const { login } = useUserStore(); // ✅ گرفتن تابع login از Zustand
+  const { setUserId } = useCartStore()
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -31,6 +33,7 @@ export default function LoginPage() {
         username: user.username,
         name: user.username 
       });
+      setUserId(user.username)
       
       router.push("/");
     } else {
