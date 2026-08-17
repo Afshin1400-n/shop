@@ -2,20 +2,26 @@
 "use client"
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'  // ✅ اضافه شد
 import { useCartStore } from '../store/cartStore'
-import { useUserStore } from '../store/userStore'  // ✅ اضافه شد
+import { useUserStore } from '../store/userStore'
 import { FiTrash2 } from 'react-icons/fi'
 
 export default function CartPage() {
+  const router = useRouter()  // ✅ اضافه شد
   const { items, removeFromCart, updateQuantity, clearCart, totalItems, totalPrice } = useCartStore()
-  
-  // ✅ گرفتن user از Zustand
-  const { user, isLoggedIn } = useUserStore()
+  const { user, isLoggedIn, logout } = useUserStore()  // ✅ logout اضافه شد
 
-  // گرفتن حرف اول نام کاربری
   const getInitial = (name: string) => {
     if (!name) return "?"
     return name.charAt(0).toUpperCase()
+  }
+
+  // ✅ تابع خروج
+  const handleLogout = () => {
+    logout()  // خروج از Zustand
+    localStorage.removeItem("currentUser")  // پاک کردن localStorage
+    router.push("/login")  // رفتن به صفحه لاگین
   }
 
   // اگر سبد خرید خالی بود
@@ -23,7 +29,6 @@ export default function CartPage() {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 via-gray-50 to-stone-50">
         
-        {/* ✅ هدر با پروفایل کاربر */}
         <header className="bg-white/80 backdrop-blur-sm shadow-sm border-b border-slate-200/50 sticky top-0 z-50">
           <div className="max-w-7xl mx-auto px-4 py-3">
             <div className="flex items-center justify-between gap-4">
@@ -41,7 +46,6 @@ export default function CartPage() {
                   )}
                 </Link>
                 
-                {/* ✅ پروفایل کاربر */}
                 <div className="flex items-center gap-2 px-3 py-2 bg-white/80 backdrop-blur-sm rounded-xl shadow-sm border border-slate-200/50">
                   <div className="w-8 h-8 bg-gradient-to-br from-emerald-400 to-teal-500 rounded-full flex items-center justify-center text-white text-sm font-bold shadow-md shadow-emerald-500/20">
                     {getInitial(user?.username || user?.name)}
@@ -51,7 +55,10 @@ export default function CartPage() {
                       {user?.username || user?.name || "کاربر مهمان"}
                     </p>
                     {isLoggedIn ? (
-                      <button className="text-[10px] text-slate-400 hover:text-red-500 transition-colors">
+                      <button 
+                        onClick={handleLogout}  // ✅ درست
+                        className="text-[10px] text-slate-400 hover:text-red-500 transition-colors"
+                      >
                         خروج
                       </button>
                     ) : (
@@ -66,7 +73,6 @@ export default function CartPage() {
           </div>
         </header>
 
-        {/* محتوای خالی */}
         <div className="flex items-center justify-center py-20">
           <div className="text-center">
             <div className="text-6xl mb-4">🛒</div>
@@ -88,7 +94,6 @@ export default function CartPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-gray-50 to-stone-50">
       
-      {/* ✅ هدر با پروفایل کاربر */}
       <header className="bg-white/80 backdrop-blur-sm shadow-sm border-b border-slate-200/50 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 py-3">
           <div className="flex items-center justify-between gap-4">
@@ -106,7 +111,6 @@ export default function CartPage() {
                 )}
               </Link>
               
-              {/* ✅ پروفایل کاربر */}
               <div className="flex items-center gap-2 px-3 py-2 bg-white/80 backdrop-blur-sm rounded-xl shadow-sm border border-slate-200/50">
                 <div className="w-8 h-8 bg-gradient-to-br from-emerald-400 to-teal-500 rounded-full flex items-center justify-center text-white text-sm font-bold shadow-md shadow-emerald-500/20">
                   {getInitial(user?.username || user?.name)}
@@ -116,7 +120,10 @@ export default function CartPage() {
                     {user?.username || user?.name || "کاربر مهمان"}
                   </p>
                   {isLoggedIn ? (
-                    <button className="text-[10px] text-slate-400 hover:text-red-500 transition-colors">
+                    <button 
+                      onClick={handleLogout}  // ✅ درست
+                      className="text-[10px] text-slate-400 hover:text-red-500 transition-colors"
+                    >
                       خروج
                     </button>
                   ) : (
@@ -131,7 +138,6 @@ export default function CartPage() {
         </div>
       </header>
 
-      {/* محتوای سبد خرید */}
       <div className="max-w-7xl mx-auto px-4 py-8">
         
         <div className="flex items-center justify-between mb-8">
@@ -145,7 +151,6 @@ export default function CartPage() {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* لیست آیتم‌ها */}
           <div className="lg:col-span-2 space-y-4">
             {items.map((item) => (
               <div 
@@ -198,7 +203,6 @@ export default function CartPage() {
             ))}
           </div>
 
-          {/* خلاصه سبد خرید */}
           <div className="bg-white rounded-xl p-6 shadow-sm border border-slate-200/50 h-fit sticky top-20">
             <h3 className="text-lg font-bold text-slate-700 mb-4">📊 خلاصه سبد خرید</h3>
             
