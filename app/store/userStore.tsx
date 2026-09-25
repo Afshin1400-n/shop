@@ -9,7 +9,7 @@ export const useUserStore = create()(
       user: null,
       isLoggedIn: false,
       login: (user) => set({ user, isLoggedIn: true }),
-      logout: () => set({ user: null, isLoggedIn: false }),  // ✅ باید باشه
+      logout: () => set({ user: null, isLoggedIn: false }),   
       setUser: (user) => set({ user, isLoggedIn: !!user }),
     }),
     {

@@ -4,7 +4,7 @@ import { create } from 'zustand'
 
 export const useFilterStore = create((set) => ({
   filter: 'ALL',
-  searchTerm: '',  // ✅ مقدار اولیه
+  searchTerm: '',  
   setFilter: (filter) => set({ filter }),
-  setSearchTerm: (searchTerm) => set({ searchTerm }),  // ✅ تابع جستجو
+  setSearchTerm: (searchTerm) => set({ searchTerm }),  
 }))

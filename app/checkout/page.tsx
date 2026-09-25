@@ -12,7 +12,7 @@ export default function CheckoutPage() {
   const { items, totalPrice, clearCart } = useCartStore()
   const { user } = useUserStore()
 
-  // اطلاعات فرم
+  // Form data
   const [formData, setFormData] = useState({
     fullName: user?.name || '',
     phone: '',
@@ -25,38 +25,38 @@ export default function CheckoutPage() {
   const [loading, setLoading] = useState(false)
   const [success, setSuccess] = useState(false)
 
-  // اگر سبد خرید خالی بود
+  // If cart is empty
   if (items.length === 0) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 via-gray-50 to-stone-50 flex items-center justify-center">
         <div className="text-center py-20">
           <div className="text-6xl mb-4">🛒</div>
-          <h2 className="text-2xl font-medium text-slate-500">سبد خرید خالی است</h2>
+          <h2 className="text-2xl font-medium text-slate-500">Your cart is empty</h2>
           <Link href="/" className="mt-4 inline-block text-emerald-500 hover:text-emerald-600">
-            ← بازگشت به فروشگاه
+            ← Back to Shop
           </Link>
         </div>
       </div>
     )
   }
 
-  const handleChange = (e) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value })
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
 
-    // شبیه‌سازی ثبت سفارش
+    // Simulate order submission
     setTimeout(() => {
       setSuccess(true)
       setLoading(false)
-      
-      // پاک کردن سبد خرید بعد از ثبت سفارش
+
+      // Clear cart after order is placed
       clearCart()
-      
-      // بعد از ۳ ثانیه رفتن به صفحه اصلی
+
+      // Redirect to home after 3 seconds
       setTimeout(() => {
         router.push('/')
       }, 3000)
@@ -66,44 +66,44 @@ export default function CheckoutPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-gray-50 to-stone-50 py-8">
       <div className="max-w-4xl mx-auto px-4">
-        
-        {/* هدر */}
+
+        {/* Header */}
         <div className="flex items-center gap-4 mb-8">
           <Link href="/cart" className="text-slate-400 hover:text-slate-600 transition-colors">
-            ← بازگشت
+            ← Back
           </Link>
-          <h1 className="text-3xl font-bold text-slate-700">📋 تکمیل خرید</h1>
+          <h1 className="text-3xl font-bold text-slate-700">📋 Checkout</h1>
         </div>
 
         {success ? (
           <div className="bg-white rounded-2xl p-8 shadow-sm border border-emerald-200 text-center">
             <div className="text-6xl mb-4">✅</div>
-            <h2 className="text-2xl font-bold text-emerald-600">سفارش شما با موفقیت ثبت شد!</h2>
-            <p className="text-slate-500 mt-2">از خرید شما متشکریم</p>
+            <h2 className="text-2xl font-bold text-emerald-600">Your order has been placed successfully!</h2>
+            <p className="text-slate-500 mt-2">Thank you for your purchase</p>
             <Link href="/" className="inline-block mt-6 px-6 py-3 bg-emerald-500 text-white rounded-xl">
-              بازگشت به فروشگاه
+              Back to Shop
             </Link>
           </div>
         ) : (
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            
-            {/* فرم اطلاعات */}
+
+            {/* Form */}
             <div className="lg:col-span-2">
               <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200/50">
-                <h2 className="text-lg font-bold text-slate-700 mb-4">اطلاعات تحویل</h2>
-                
+                <h2 className="text-lg font-bold text-slate-700 mb-4">Delivery Information</h2>
+
                 <form onSubmit={handleSubmit} className="space-y-4">
-                  {/* نام و نام خانوادگی */}
+                  {/* Full name */}
                   <div>
                     <label className="block text-slate-600 text-sm font-medium mb-1.5">
-                      نام و نام خانوادگی *
+                      Full Name *
                     </label>
                     <input
                       type="text"
                       name="fullName"
                       value={formData.fullName}
                       onChange={handleChange}
-                      placeholder="نام خود را وارد کنید"
+                      placeholder="Enter your full name"
                       className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl 
                       focus:border-emerald-400 focus:ring-2 focus:ring-emerald-100 outline-none 
                       text-slate-700 placeholder:text-slate-400 transition-all text-sm"
@@ -111,17 +111,17 @@ export default function CheckoutPage() {
                     />
                   </div>
 
-                  {/* تلفن */}
+                  {/* Phone */}
                   <div>
                     <label className="block text-slate-600 text-sm font-medium mb-1.5">
-                      شماره تلفن *
+                      Phone Number *
                     </label>
                     <input
                       type="tel"
                       name="phone"
                       value={formData.phone}
                       onChange={handleChange}
-                      placeholder="مثال: 09123456789"
+                      placeholder="e.g., 09123456789"
                       className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl 
                       focus:border-emerald-400 focus:ring-2 focus:ring-emerald-100 outline-none 
                       text-slate-700 placeholder:text-slate-400 transition-all text-sm"
@@ -129,18 +129,18 @@ export default function CheckoutPage() {
                     />
                   </div>
 
-                  {/* استان / شهر */}
+                  {/* City / Postal code */}
                   <div className="grid grid-cols-2 gap-4">
                     <div>
                       <label className="block text-slate-600 text-sm font-medium mb-1.5">
-                        استان *
+                        City *
                       </label>
                       <input
                         type="text"
                         name="city"
                         value={formData.city}
                         onChange={handleChange}
-                        placeholder="استان"
+                        placeholder="City"
                         className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl 
                         focus:border-emerald-400 focus:ring-2 focus:ring-emerald-100 outline-none 
                         text-slate-700 placeholder:text-slate-400 transition-all text-sm"
@@ -149,14 +149,14 @@ export default function CheckoutPage() {
                     </div>
                     <div>
                       <label className="block text-slate-600 text-sm font-medium mb-1.5">
-                        کد پستی *
+                        Postal Code *
                       </label>
                       <input
                         type="text"
                         name="postalCode"
                         value={formData.postalCode}
                         onChange={handleChange}
-                        placeholder="کد پستی"
+                        placeholder="Postal code"
                         className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl 
                         focus:border-emerald-400 focus:ring-2 focus:ring-emerald-100 outline-none 
                         text-slate-700 placeholder:text-slate-400 transition-all text-sm"
@@ -165,17 +165,17 @@ export default function CheckoutPage() {
                     </div>
                   </div>
 
-                  {/* آدرس */}
+                  {/* Address */}
                   <div>
                     <label className="block text-slate-600 text-sm font-medium mb-1.5">
-                      آدرس کامل *
+                      Full Address *
                     </label>
                     <textarea
                       name="address"
                       value={formData.address}
                       onChange={handleChange}
-                      rows="3"
-                      placeholder="آدرس دقیق خود را وارد کنید..."
+                      rows={3}
+                      placeholder="Enter your full address..."
                       className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl 
                       focus:border-emerald-400 focus:ring-2 focus:ring-emerald-100 outline-none 
                       text-slate-700 placeholder:text-slate-400 transition-all text-sm resize-none"
@@ -183,17 +183,17 @@ export default function CheckoutPage() {
                     />
                   </div>
 
-                  {/* توضیحات */}
+                  {/* Description */}
                   <div>
                     <label className="block text-slate-600 text-sm font-medium mb-1.5">
-                      توضیحات (اختیاری)
+                      Notes (optional)
                     </label>
                     <textarea
                       name="description"
                       value={formData.description}
                       onChange={handleChange}
-                      rows="2"
-                      placeholder="توضیحات اضافی..."
+                      rows={2}
+                      placeholder="Additional notes..."
                       className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl 
                       focus:border-emerald-400 focus:ring-2 focus:ring-emerald-100 outline-none 
                       text-slate-700 placeholder:text-slate-400 transition-all text-sm resize-none"
@@ -206,19 +206,19 @@ export default function CheckoutPage() {
                     className="w-full py-3 bg-gradient-to-r from-emerald-500 to-teal-500 
                     hover:from-emerald-600 hover:to-teal-600 active:scale-[0.98]
                     text-white font-medium rounded-xl transition-all duration-200 
-                    shadow-md shadow-emerald-500/20 disabled:opacity-50"
+                    shadow-md shadow-emerald-500/20 disabled:opacity-50 cursor-pointer"
                   >
-                    {loading ? '⏳ در حال ثبت...' : '✅ ثبت سفارش'}
+                    {loading ? '⏳ Placing order...' : '✅ Place Order'}
                   </button>
                 </form>
               </div>
             </div>
 
-            {/* خلاصه سفارش */}
+            {/* Order summary */}
             <div className="lg:col-span-1">
               <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200/50 sticky top-20">
-                <h3 className="text-lg font-bold text-slate-700 mb-4">📊 خلاصه سفارش</h3>
-                
+                <h3 className="text-lg font-bold text-slate-700 mb-4">📊 Order Summary</h3>
+
                 <div className="space-y-3 max-h-60 overflow-y-auto">
                   {items.map((item) => (
                     <div key={item.id} className="flex items-center justify-between text-sm border-b border-slate-100 pb-2">
@@ -227,7 +227,7 @@ export default function CheckoutPage() {
                         <p className="text-xs text-slate-400">× {item.quantity}</p>
                       </div>
                       <span className="text-sm font-medium text-slate-600">
-                        {(item.price * item.quantity).toLocaleString()} تومان
+                        {(item.price * item.quantity).toLocaleString()} $
                       </span>
                     </div>
                   ))}
@@ -235,12 +235,12 @@ export default function CheckoutPage() {
 
                 <div className="border-t border-slate-200 pt-3 mt-3">
                   <div className="flex justify-between text-sm">
-                    <span className="text-slate-500">تعداد اقلام</span>
-                    <span className="font-medium">{items.reduce((t, i) => t + i.quantity, 0)} عدد</span>
+                    <span className="text-slate-500">Total items</span>
+                    <span className="font-medium">{items.reduce((t, i) => t + i.quantity, 0)} items</span>
                   </div>
                   <div className="flex justify-between text-lg font-bold mt-2">
-                    <span className="text-slate-700">مجموع</span>
-                    <span className="text-emerald-600">{totalPrice().toLocaleString()} تومان</span>
+                    <span className="text-slate-700">Total</span>
+                    <span className="text-emerald-600">{totalPrice().toLocaleString()} $\</span>
                   </div>
                 </div>
               </div>

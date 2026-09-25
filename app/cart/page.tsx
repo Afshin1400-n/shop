@@ -2,46 +2,46 @@
 "use client"
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'  // ✅ اضافه شد
+import { useRouter } from 'next/navigation'
 import { useCartStore } from '../store/cartStore'
 import { useUserStore } from '../store/userStore'
 import { FiTrash2 } from 'react-icons/fi'
 
 export default function CartPage() {
-  const router = useRouter()  // ✅ اضافه شد
+  const router = useRouter()
   const { items, removeFromCart, updateQuantity, clearCart, totalItems, totalPrice } = useCartStore()
-  const { user, isLoggedIn, logout } = useUserStore()  // ✅ logout اضافه شد
+  const { user, isLoggedIn, logout } = useUserStore()
 
-  const getInitial = (name: string) => {
+  const getInitial = (name: string | undefined) => {
     if (!name) return "?"
     return name.charAt(0).toUpperCase()
   }
 
-    useEffect(() => {
+  useEffect(() => {
     if (!isLoggedIn) {
       router.push("/login")
     }
-  }, [isLoggedIn, router]) 
+  }, [isLoggedIn, router])
 
-  // ✅ تابع خروج
+  // Logout handler
   const handleLogout = () => {
-    logout()  // خروج از Zustand
-    localStorage.removeItem("currentUser")  // پاک کردن localStorage
-    router.push("/login")  // رفتن به صفحه لاگین
+    logout()  // Logout from Zustand
+    localStorage.removeItem("currentUser")  // Clear localStorage
+    router.push("/login")  // Redirect to login
   }
 
-  // اگر سبد خرید خالی بود
+  // If cart is empty
   if (items.length === 0) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 via-gray-50 to-stone-50">
-        
+
         <header className="bg-white/80 backdrop-blur-sm shadow-sm border-b border-slate-200/50 sticky top-0 z-50">
           <div className="max-w-7xl mx-auto px-4 py-3">
             <div className="flex items-center justify-between gap-4">
               <Link href="/" className="text-2xl font-bold bg-gradient-to-r from-emerald-500 to-teal-500 bg-clip-text text-transparent">
-                🛍️ فروشگاه
+                🛍️ Shop
               </Link>
-              
+
               <div className="flex items-center gap-3">
                 <Link href="/cart" className="relative p-2 text-slate-500 hover:text-emerald-500 transition-colors">
                   🛒
@@ -51,25 +51,25 @@ export default function CartPage() {
                     </span>
                   )}
                 </Link>
-                
+
                 <div className="flex items-center gap-2 px-3 py-2 bg-white/80 backdrop-blur-sm rounded-xl shadow-sm border border-slate-200/50">
                   <div className="w-8 h-8 bg-gradient-to-br from-emerald-400 to-teal-500 rounded-full flex items-center justify-center text-white text-sm font-bold shadow-md shadow-emerald-500/20">
                     {getInitial(user?.username || user?.name)}
                   </div>
                   <div className="text-right hidden sm:block">
                     <p className="text-xs font-medium text-slate-700">
-                      {user?.username || user?.name || "کاربر مهمان"}
+                      {user?.username || user?.name || "Guest"}
                     </p>
                     {isLoggedIn ? (
-                      <button 
-                        onClick={handleLogout}  // ✅ درست
+                      <button
+                        onClick={handleLogout}
                         className="text-[10px] text-slate-400 hover:text-red-500 transition-colors"
                       >
-                        خروج
+                        Logout
                       </button>
                     ) : (
                       <Link href="/login" className="text-[10px] text-emerald-500 hover:text-emerald-600 transition-colors">
-                        ورود / ثبت‌نام
+                        Login / Sign Up
                       </Link>
                     )}
                   </div>
@@ -82,14 +82,14 @@ export default function CartPage() {
         <div className="flex items-center justify-center py-20">
           <div className="text-center">
             <div className="text-6xl mb-4">🛒</div>
-            <h2 className="text-2xl font-medium text-slate-500">سبد خرید خالی است</h2>
-            <p className="text-sm text-slate-400 mt-1">محصولات مورد نظر خود را اضافه کنید</p>
-            <Link 
-              href="/" 
+            <h2 className="text-2xl font-medium text-slate-500">Your cart is empty</h2>
+            <p className="text-sm text-slate-400 mt-1">Add products to get started</p>
+            <Link
+              href="/"
               className="mt-6 inline-block px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-500 
               text-white font-medium rounded-xl transition-all duration-200"
             >
-              ← بازگشت به فروشگاه
+              ← Back to Shop
             </Link>
           </div>
         </div>
@@ -99,14 +99,14 @@ export default function CartPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-gray-50 to-stone-50">
-      
+
       <header className="bg-white/80 backdrop-blur-sm shadow-sm border-b border-slate-200/50 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 py-3">
           <div className="flex items-center justify-between gap-4">
             <Link href="/" className="text-2xl font-bold bg-gradient-to-r from-emerald-500 to-teal-500 bg-clip-text text-transparent">
-              🛍️ فروشگاه
+              🛍️ Shop
             </Link>
-            
+
             <div className="flex items-center gap-3">
               <Link href="/cart" className="relative p-2 text-slate-500 hover:text-emerald-500 transition-colors">
                 🛒
@@ -116,25 +116,25 @@ export default function CartPage() {
                   </span>
                 )}
               </Link>
-              
+
               <div className="flex items-center gap-2 px-3 py-2 bg-white/80 backdrop-blur-sm rounded-xl shadow-sm border border-slate-200/50">
                 <div className="w-8 h-8 bg-gradient-to-br from-emerald-400 to-teal-500 rounded-full flex items-center justify-center text-white text-sm font-bold shadow-md shadow-emerald-500/20">
                   {getInitial(user?.username || user?.name)}
                 </div>
                 <div className="text-right hidden sm:block">
                   <p className="text-xs font-medium text-slate-700">
-                    {user?.username || user?.name || "کاربر مهمان"}
+                    {user?.username || user?.name || "Guest"}
                   </p>
                   {isLoggedIn ? (
-                    <button 
-                      onClick={handleLogout}  // ✅ درست
+                    <button
+                      onClick={handleLogout}
                       className="text-[10px] text-slate-400 hover:text-red-500 transition-colors"
                     >
-                      خروج
+                      Logout
                     </button>
                   ) : (
                     <Link href="/login" className="text-[10px] text-emerald-500 hover:text-emerald-600 transition-colors">
-                      ورود / ثبت‌نام
+                      Login / Sign Up
                     </Link>
                   )}
                 </div>
@@ -145,22 +145,22 @@ export default function CartPage() {
       </header>
 
       <div className="max-w-7xl mx-auto px-4 py-8">
-        
+
         <div className="flex items-center justify-between mb-8">
-          <h1 className="text-3xl font-bold text-slate-700">🛒 سبد خرید</h1>
+          <h1 className="text-3xl font-bold text-slate-700">🛒 Shopping Cart</h1>
           <button
             onClick={clearCart}
-            className="text-sm text-red-500 hover:text-red-600 transition-colors"
+            className="text-sm text-red-500 hover:text-red-600 transition-colors cursor-pointer"
           >
-            🗑️ حذف همه
+            🗑️ Clear All
           </button>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2 space-y-4">
             {items.map((item) => (
-              <div 
-                key={item.id} 
+              <div
+                key={item.id}
                 className="bg-white rounded-xl p-4 shadow-sm border border-slate-200/50 
                 flex items-center gap-4 hover:shadow-md transition-all"
               >
@@ -168,19 +168,19 @@ export default function CartPage() {
                 flex items-center justify-center text-2xl font-bold text-emerald-500">
                   {item.name.charAt(0)}
                 </div>
-                
+
                 <div className="flex-1">
                   <h3 className="font-semibold text-slate-700">{item.name}</h3>
                   <p className="text-sm text-slate-400">{item.category}</p>
                   <p className="text-sm font-bold text-emerald-600 mt-1">
-                    {item.price.toLocaleString()} تومان
+                    {item.price.toLocaleString()} $
                   </p>
                 </div>
 
                 <div className="flex items-center gap-2">
                   <button
                     onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                    className="w-8 h-8 bg-slate-100 rounded-lg hover:bg-slate-200 transition-colors text-slate-600"
+                    className="w-8 h-8 bg-slate-100 rounded-lg hover:bg-slate-200 transition-colors text-slate-600 cursor-pointer"
                   >
                     -
                   </button>
@@ -189,19 +189,19 @@ export default function CartPage() {
                   </span>
                   <button
                     onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                    className="w-8 h-8 bg-slate-100 rounded-lg hover:bg-slate-200 transition-colors text-slate-600"
+                    className="w-8 h-8 bg-slate-100 rounded-lg hover:bg-slate-200 transition-colors text-slate-600 cursor-pointer"
                   >
                     +
                   </button>
                 </div>
 
                 <div className="text-sm font-medium text-slate-600 min-w-[80px] text-center">
-                  {(item.price * item.quantity).toLocaleString()} تومان
+                  {(item.price * item.quantity).toLocaleString()} $
                 </div>
 
                 <button
                   onClick={() => removeFromCart(item.id)}
-                  className="text-slate-400 hover:text-red-500 transition-colors"
+                  className="text-slate-400 hover:text-red-500 transition-colors cursor-pointer"
                 >
                   <FiTrash2 className="w-5 h-5" />
                 </button>
@@ -210,33 +210,33 @@ export default function CartPage() {
           </div>
 
           <div className="bg-white rounded-xl p-6 shadow-sm border border-slate-200/50 h-fit sticky top-20">
-            <h3 className="text-lg font-bold text-slate-700 mb-4">📊 خلاصه سبد خرید</h3>
-            
+            <h3 className="text-lg font-bold text-slate-700 mb-4">📊 Cart Summary</h3>
+
             <div className="space-y-3 text-sm">
               <div className="flex justify-between">
-                <span className="text-slate-500">تعداد اقلام</span>
-                <span className="font-medium text-slate-700">{totalItems()} عدد</span>
+                <span className="text-slate-500">Total items</span>
+                <span className="font-medium text-slate-700">{totalItems()} items</span>
               </div>
               <div className="flex justify-between border-t pt-3">
-                <span className="text-slate-700 font-bold">مجموع</span>
+                <span className="text-slate-700 font-bold">Total</span>
                 <span className="text-lg font-bold text-emerald-600">
-                  {totalPrice().toLocaleString()} تومان
+                  {totalPrice().toLocaleString()} $
                 </span>
               </div>
             </div>
 
-<Link href="/checkout">
-  <button className="w-full mt-4 py-3 bg-gradient-to-r from-emerald-500 to-teal-500 
-    hover:from-emerald-600 hover:to-teal-600 active:scale-[0.98]
-    text-white font-medium rounded-xl transition-all duration-200 shadow-md shadow-emerald-500/20">
-    ✅ ادامه فرآیند خرید
-  </button>
-</Link>
-            <Link 
-              href="/" 
+            <Link href="/checkout">
+              <button className="w-full mt-4 py-3 bg-gradient-to-r from-emerald-500 to-teal-500 
+                hover:from-emerald-600 hover:to-teal-600 active:scale-[0.98]
+                text-white font-medium rounded-xl transition-all duration-200 shadow-md shadow-emerald-500/20 cursor-pointer">
+                ✅ Proceed to Checkout
+              </button>
+            </Link>
+            <Link
+              href="/"
               className="block text-center text-sm text-slate-400 hover:text-emerald-500 transition-colors mt-3"
             >
-              ← بازگشت به فروشگاه
+              ← Back to Shop
             </Link>
           </div>
         </div>

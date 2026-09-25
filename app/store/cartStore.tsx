@@ -2,15 +2,42 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 
+interface Product {
+  id: number
+  name: string
+  price: number
+  description: string
+  category: string
+  rating: number
+  stock: number
+}
 
-export const useCartStore = create()(
+interface CartItem extends Product {
+  quantity: number
+}
+
+interface CartStore {
+  items: CartItem[]
+  userId: string | null
+
+  setUserId: (userId: string) => void
+  loadCart: (userId: string) => void
+  addToCart: (product: Product) => void
+  removeFromCart: (id: number) => void
+  updateQuantity: (id: number, quantity: number) => void
+  clearCart: () => void
+  totalItems: () => number
+  totalPrice: () => number
+}
+
+export const useCartStore = create<CartStore>()(
   (set, get) => ({
     items: [],
     userId: null,
 
     setUserId: (userId) => {
       set({ userId })
-      // بارگذاری سبد خرید کاربر
+      // Load user's cart
       const saved = localStorage.getItem(`cart_${userId}`)
       if (saved) {
         try {
@@ -49,7 +76,7 @@ export const useCartStore = create()(
         } else {
           newItems = [...state.items, { ...product, quantity: 1 }]
         }
-        // ذخیره در localStorage با کلید کاربر
+        // Save to localStorage with user-specific key
         if (state.userId) {
           localStorage.setItem(`cart_${state.userId}`, JSON.stringify(newItems))
         }
